@@ -9,6 +9,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
+import com.obss.movietracker.models.Director;
 import com.obss.movietracker.models.Movie;
 
 
@@ -24,4 +25,9 @@ public interface MovieDAO extends JpaRepository<Movie,Long>{
 	
 	@Query("select u FROM Movie u WHERE name LIKE %?1% ")
 	List<Movie> findMyMovieLike(String name);
+	
+	@Query("select u FROM Movie u "
+			+ "JOIN u.directors a "
+			+ "WHERE a.directorId = ?1  ")
+	List<Movie> findMyDirectorMovie(Long directorId);
 }

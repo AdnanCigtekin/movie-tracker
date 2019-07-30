@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
@@ -31,7 +32,7 @@ public class Movie {
 	private String name;
 	
 	
-	 @ManyToMany
+	 @ManyToMany(fetch = FetchType.EAGER)
 	 @JoinTable(
 	   name="MOV_DIR",
 	   joinColumns=@JoinColumn(name="MOV_ID", referencedColumnName="ID"),

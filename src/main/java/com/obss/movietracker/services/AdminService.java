@@ -36,6 +36,8 @@ public interface AdminService {
 	
 	public List<Director> searchDirector(String director);
 	
+	public List<Movie> searchDirectorMovies(String director);
+	
 	
 	
 }

@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.obss.movietracker.dto.IdContainer;
 import com.obss.movietracker.models.Director;
+import com.obss.movietracker.models.Movie;
 import com.obss.movietracker.services.imp.AdminServiceImp;
 
 @RestController
@@ -80,7 +81,24 @@ public class DirectorController {
 	    	return new ResponseEntity<>(output.toString(), HttpStatus.ACCEPTED);
 	    	
 	    }   
-
+	    
+	    
+	    @GetMapping("/")
+	    public ResponseEntity<String> searchDirectorMovies(@RequestParam(value="name") String director) {
+	    	
+	    	List<Movie> directorList = adminService.searchDirectorMovies(director);		
+	    	
+	    	//Returning the output
+	    	StringBuffer output = new StringBuffer();
+	    	output.append("{ \n		'output' : [\n ");
+	    	for(Movie u : directorList) {
+	    		output.append("\t\t\t\t\t" + u.toString() + "\n");
+	    	}
+	    	output.append("\t\t\t\t\t]\n}");
+	    	
+	    	return new ResponseEntity<>(output.toString(), HttpStatus.ACCEPTED);
+	    	
+	    }
 
 
 

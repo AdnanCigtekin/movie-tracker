@@ -269,10 +269,21 @@ public class AdminServiceImp  implements AdminService{
 	public List<Director> searchDirector(String director) {
 		List<Director> resultSet = directorRepository.findDirectorLike(director);
 		//System.out.println(resultSet);
-		
-		
 		//return userRepository.findAll().stream().filter((content) -> user == content.).findFirst().orElse(null);
 		return resultSet;
+	}
+
+	@Override
+	public List<Movie> searchDirectorMovies(String director) {
+		List<Director> resultSet = directorRepository.findDirectorByName(director);
+		
+		if(resultSet.isEmpty())
+			return null;
+		
+		Long directorId = resultSet.get(0).getDirectorId();
+		
+		List<Movie> resultOfMovies = movieRepository.findMyDirectorMovie(directorId);
+		return resultOfMovies;
 	}
 
 }
