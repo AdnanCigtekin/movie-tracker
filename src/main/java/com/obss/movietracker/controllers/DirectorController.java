@@ -6,6 +6,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.annotation.Secured;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -30,6 +32,8 @@ public class DirectorController {
 	
 	 /*		DIRECTOR		*/
 		@PostMapping("/")
+		@Secured({"ROLE_ADMIN"})
+		//@PreAuthorize("hasRole('ROLE_ADMIN')")
 	    public ResponseEntity<String> addDirector(@RequestBody Director director) {
 	    	
 	    	Boolean isSuccess = adminService.addDirector(director);		
@@ -42,6 +46,8 @@ public class DirectorController {
 	    }
 	    
 	    @PutMapping("/")
+	    @Secured({"ROLE_ADMIN"})
+	    //@PreAuthorize("hasRole('ADMIN')")
 	    public ResponseEntity<String> updateMovie(@RequestBody Director director) {
 	    	
 	    	Boolean isSuccess = adminService.updateDirector(director);		
@@ -54,6 +60,8 @@ public class DirectorController {
 	    } 
 	    
 	    @DeleteMapping("/")
+	    @Secured({"ROLE_ADMIN"})
+	    //@PreAuthorize("hasRole('ADMIN')")
 	    public ResponseEntity<String> deleteDirector(@RequestBody IdContainer myId) {
 	    	
 	    	Boolean isSuccess = adminService.deleteDirector(myId.getId());		
@@ -66,6 +74,8 @@ public class DirectorController {
 	    } 
 	     
 	    @GetMapping("/search")
+	    @Secured({"ROLE_ADMIN"})
+	    //@PreAuthorize("hasRole('ADMIN')")
 	    public ResponseEntity<String> searchDirector(@RequestParam(value="name") String director) {
 	    	
 	    	List<Director> directorList = adminService.searchDirector(director);		
@@ -84,6 +94,8 @@ public class DirectorController {
 	    
 	    
 	    @GetMapping("/")
+	    @Secured({"ROLE_ADMIN"})
+	    //@PreAuthorize("hasRole('ADMIN')")
 	    public ResponseEntity<String> searchDirectorMovies(@RequestParam(value="name") String director) {
 	    	
 	    	List<Movie> directorList = adminService.searchDirectorMovies(director);		

@@ -2,10 +2,15 @@ package com.obss.movietracker.controllers;
 
 import java.util.List;
 
+import javax.annotation.PostConstruct;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.annotation.Secured;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -16,6 +21,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.obss.movietracker.dto.IdContainer;
+import com.obss.movietracker.dto.UserCreateDTO;
 import com.obss.movietracker.models.Users;
 import com.obss.movietracker.services.imp.AdminServiceImp;
 import com.obss.movietracker.services.imp.UserServiceImp;
@@ -32,9 +38,19 @@ public class UserController {
     @Qualifier("adminService")
     private AdminServiceImp adminService;
     
+
+    
+	@PostConstruct
+	public void init() {
+		adminService.addAdmin();
+	}
+    
+    
     /*		USER		*/
 	@PostMapping("/")
-    public ResponseEntity<String> addUser(@RequestBody Users user) {
+	@Secured({"ROLE_ADMIN"})
+	//@PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<String> addUser(@RequestBody UserCreateDTO user) {
     	
     	Boolean isSuccess = adminService.addUser(user);		
     	
@@ -46,18 +62,22 @@ public class UserController {
     }
     
     @PutMapping("/")
-    public ResponseEntity<String> updateUser(@RequestBody Users user) {
+    @Secured({"ROLE_ADMIN"})
+    //@PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<String> updateUser(@RequestBody UserCreateDTO user) {
     	
     	Boolean isSuccess = adminService.updateUser(user);		
     	
     	if(isSuccess)
     		return new ResponseEntity<>("OK", HttpStatus.ACCEPTED);
     	else
-    		return new ResponseEntity<>("Failed to create user", HttpStatus.INTERNAL_SERVER_ERROR);
+    		return new ResponseEntity<>("Failed to update user", HttpStatus.INTERNAL_SERVER_ERROR);
 
     } 
     
     @DeleteMapping("/")
+    @Secured({"ROLE_ADMIN"})
+    //@PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<String> deleteUser(@RequestBody IdContainer myId) {
     	
     	Boolean isSuccess = adminService.deleteUser(myId.getId());		
@@ -70,6 +90,8 @@ public class UserController {
     } 
      
     @GetMapping("/search")
+    @Secured({"ROLE_ADMIN"})
+  //  @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<String> searchUser(@RequestParam(value="name") String user) {
     	
     	List<Users> userList = adminService.searchUser(user);		

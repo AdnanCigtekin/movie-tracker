@@ -6,6 +6,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.annotation.Secured;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -36,6 +38,8 @@ public class MovieController {
 	
     /*		MOVIE		*/
 	@PostMapping("/")
+	@Secured({"ROLE_ADMIN"})
+	//@PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<String> addMovie(@RequestBody MovieInformation movie) {
     	
     	Boolean isSuccess = adminService.addMovie(movie);		
@@ -48,6 +52,8 @@ public class MovieController {
     }
     
     @PutMapping("/")
+    @Secured({"ROLE_ADMIN"})
+  //  @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<String> updateMovie(@RequestBody MovieInformation movie) {
     	
     	Boolean isSuccess = adminService.updateMovie(movie);		
@@ -60,6 +66,8 @@ public class MovieController {
     } 
     
     @DeleteMapping("/")
+    @Secured({"ROLE_ADMIN"})
+  //  @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<String> deleteMovie(@RequestBody IdContainer myId) {
     	
     	Boolean isSuccess = adminService.deleteMovie(myId.getId());		
@@ -72,6 +80,8 @@ public class MovieController {
     } 
      
     @GetMapping("/search")
+    @Secured({"ROLE_ADMIN"})
+   // @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<String> searchMovie(@RequestParam(value="name") String movie) {
     	
     	List<Movie> movieList = adminService.searchMovie(movie);		
@@ -91,6 +101,8 @@ public class MovieController {
    
 	
     @GetMapping("/list")
+    @Secured({"ROLE_ADMIN","ROLE_USER"})
+   // @PreAuthorize("hasRole('USER')")
     public ResponseEntity<String> getListOfMovies() {
     	
     	List<Movie> movieList = userService.getListOfMovies();
@@ -108,6 +120,8 @@ public class MovieController {
     } 
     
     @PostMapping("/list")
+    @Secured({"ROLE_ADMIN","ROLE_USER"})
+   // @PreAuthorize("hasRole('USER')")
     public ResponseEntity<String> addMovieToList(@RequestBody MovieListInformation info) {
     	
     	Boolean isSuccess = userService.addToList(info.getListId(), info.getMovieId());
@@ -122,6 +136,8 @@ public class MovieController {
     } 
 
     @GetMapping("/list/search")
+    @Secured({"ROLE_ADMIN","ROLE_USER"})
+    @PreAuthorize("hasRole('USER')")
     public ResponseEntity<String> getListOfSearchedMovies(@RequestParam String name) {
     	
     	List<Movie> movieList = userService.searchMoviesByName(name);

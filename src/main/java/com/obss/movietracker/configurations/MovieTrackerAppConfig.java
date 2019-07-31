@@ -3,6 +3,7 @@ package com.obss.movietracker.configurations;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Scope;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 
 import com.obss.movietracker.services.imp.AdminServiceImp;
@@ -29,6 +30,7 @@ public class MovieTrackerAppConfig {
 	
 	@Bean
 	@Qualifier("userService")
+	@Scope("prototype")
 	public UserServiceImp getUserService() {
 		return new UserServiceImp();
 	}

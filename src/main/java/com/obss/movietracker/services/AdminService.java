@@ -3,18 +3,21 @@ package com.obss.movietracker.services;
 import java.util.List;
 
 import com.obss.movietracker.dto.MovieInformation;
+import com.obss.movietracker.dto.UserCreateDTO;
 import com.obss.movietracker.models.Director;
 import com.obss.movietracker.models.Movie;
 import com.obss.movietracker.models.Users;
 
 public interface AdminService {
 
+	public Boolean addAdmin();
+	
 	/*		USER OPERATIONS			*/
-	public Boolean addUser(Users user);
+	public Boolean addUser(UserCreateDTO user);
 	
 	public Boolean deleteUser(Long id);
 	
-	public Boolean updateUser(Users user);
+	Boolean updateUser(UserCreateDTO user);
 	
 	public List<Users> searchUser(String user);
 	
@@ -37,6 +40,8 @@ public interface AdminService {
 	public List<Director> searchDirector(String director);
 	
 	public List<Movie> searchDirectorMovies(String director);
+
+	
 	
 	
 	

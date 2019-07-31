@@ -1,24 +1,35 @@
 package com.obss.movietracker.services.imp;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
+import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.obss.movietracker.dao.DirectorDAO;
 import com.obss.movietracker.dao.MovieListDAO;
+import com.obss.movietracker.dao.RoleDAO;
 import com.obss.movietracker.dao.MovieDAO;
 import com.obss.movietracker.dao.UsersDAO;
 import com.obss.movietracker.dto.MovieInformation;
+import com.obss.movietracker.dto.UserCreateDTO;
 import com.obss.movietracker.models.Director;
 import com.obss.movietracker.models.Lists;
 import com.obss.movietracker.models.Movie;
+import com.obss.movietracker.models.Role;
 import com.obss.movietracker.models.Users;
 import com.obss.movietracker.services.AdminService;
 
 @Service
-public class AdminServiceImp  implements AdminService{
+public class AdminServiceImp  implements AdminService, UserDetailsService{
 
 	@Autowired
 	protected UsersDAO userRepository;
@@ -32,9 +43,67 @@ public class AdminServiceImp  implements AdminService{
 	@Autowired
 	private MovieListDAO movieListRepository;
 	
+	@Autowired
+	private RoleDAO roleRepository;
+	
+	@Autowired
+	private BCryptPasswordEncoder bcryptEncoder;
+	
+	
 	@Override
-	public Boolean addUser(Users user) {
+	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+		
+		 List<Users> user = userRepository.findMyUserByUsername(username);
+		 
+		if (user.isEmpty()) {
+			throw new UsernameNotFoundException("User not found by name: " + username);
+		}
+		return toUserDetails(user.get(0));
+	}
+	
+    private UserDetails toUserDetails(Users userObject) {
+    	
+    	String a = userObject.getAuthorities().toArray()[0].toString();
+    	
+        return User.withUsername(userObject.getUsername())
+                   .password(userObject.getPassword())
+                   .roles(userObject.getAuthorities().toArray()[0].toString()).build();
+    }
+	
+	@Override
+	public Boolean addAdmin() {
+		List<Users> admins = userRepository.findMyUserByUsername("admin");
+		
+		if(!admins.isEmpty())
+			return false;
+		
+		Users admin = new Users();
+		admin.setPassword(bcryptEncoder.encode("admin"));
+		admin.setUsername("admin");
+		admin.setEnabled(true);
+		
+		Role adminRole = new Role();
+		adminRole.setName("ADMIN");
+		roleRepository.save(adminRole);
+		
+		Role endUserRole = new Role();
+		endUserRole.setName("USER");
+		roleRepository.save(endUserRole);
+		
+		Set<Role> myLists = new HashSet<Role>();
+		myLists.add(adminRole);
+		admin.setRoles(myLists);
+		userRepository.save(admin);
+		return true;
+		
+	}
+	
+	
+	@Override
+	public Boolean addUser(UserCreateDTO user) {
 		try {
+			Users newUser = new Users();
+			
 			Lists newWatchList = new Lists();
 			newWatchList.setListName("watchlist");
 			movieListRepository.save(newWatchList);
@@ -48,9 +117,26 @@ public class AdminServiceImp  implements AdminService{
 			myLists.add(newWatchList);
 			myLists.add(newFavoriteList);
 			
-			user.setMyLists(myLists);
 			
-			Users newUser = userRepository.save(user);
+			newUser.setUsername(user.getUsername());
+			newUser.setPassword(bcryptEncoder.encode(user.getPassword()));
+			newUser.setEnabled(user.getEnabled());
+			newUser.setMyLists(myLists);
+			
+			
+			
+			
+//			for(Role s : newUser.getRoles()) {
+//				Long temp =	Long.parseLong(s);
+//				Role newDir = roleRepository.find;
+//				newRoles.add(newDir);
+//			}
+			Set<Role> newRoles = new HashSet<Role>();
+			newRoles.add(roleRepository.findById(user.getRoleId()).get());
+			
+			newUser.setRoles(newRoles);
+			
+			userRepository.save(newUser);
 			
 			newWatchList.setOwner(newUser);
 			newFavoriteList.setOwner(newUser);
@@ -88,19 +174,29 @@ public class AdminServiceImp  implements AdminService{
 	}
 
 	@Override
-	public Boolean updateUser(Users user) {
-		// TODO : try to get rid of whole user object
+	public Boolean updateUser(UserCreateDTO user) {
+		// TODO : Check for admin privileges
 		try {
-			Users newUser = userRepository.findById(user.getId()).get();
+			List<Users> userList = userRepository.findMyUserByUsername(user.getUsername());
+			
+			if(userList.isEmpty())
+				return false;
+			
+			Users newUser = userList.get(0);
 
 			if(user.getEnabled() != null)
 				newUser.setEnabled(user.getEnabled());
-			if(user.getIsAdmin() != null)
-				newUser.setIsAdmin(user.getIsAdmin());
+
 			if(user.getPassword() != null)
 				newUser.setPassword(user.getPassword());
 			if(user.getUsername() != null)
 				newUser.setUsername(user.getUsername());
+			if(user.getRoleId() != null) {
+				Set<Role> newRoles = new HashSet<Role>();
+				Optional<Role> inputRoleId = roleRepository.findById(user.getRoleId());
+				newRoles.add(inputRoleId.get());
+				newUser.setRoles(newRoles);
+			}
 			
 			userRepository.save(newUser);
 			return true;
@@ -114,14 +210,20 @@ public class AdminServiceImp  implements AdminService{
 
 	@Override
 	public List<Users> searchUser(String user) {
-		
-		List<Users> resultSet = userRepository.findMyUsernameLike(user);
+		List<Users> resultSet;
+		if(!user.equals("admin"))
+			resultSet = userRepository.findMyUsernameLike(user);
+		else
+			resultSet = userRepository.findMyUserByUsername(user);
 		//System.out.println(resultSet);
 		
 		
 		//return userRepository.findAll().stream().filter((content) -> user == content.).findFirst().orElse(null);
 		return resultSet;
 	}
+	
+	
+	
 
 	@Override
 	public Boolean addMovie(MovieInformation movie) {
@@ -202,7 +304,7 @@ public class AdminServiceImp  implements AdminService{
 
 	@Override
 	public List<Movie> searchMovie(String movie) {
-		//TODO : Hocaya sor
+		
 		List<Movie> resultSet = movieRepository.findMyMovieLike(movie);
 		
 		return resultSet;
@@ -285,5 +387,12 @@ public class AdminServiceImp  implements AdminService{
 		List<Movie> resultOfMovies = movieRepository.findMyDirectorMovie(directorId);
 		return resultOfMovies;
 	}
+
+
+
+
+
+
+
 
 }

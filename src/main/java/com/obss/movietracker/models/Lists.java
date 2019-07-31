@@ -21,7 +21,7 @@ public class Lists {
 
 	@Id
 	@Column(name = "LIST_ID", nullable = false)
-	@GeneratedValue(strategy=GenerationType.AUTO)
+	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	private Long id;
 	
 	@Column
