@@ -57,6 +57,8 @@ public class UserServiceImp implements UserService{
 		return movieRepository.findMovieByName(movieName);
 	}
 
+	
+	
 	@Override
 	public String getUserRole(String username) {
 		List<Users> newUser = userRepository.findMyUserByUsername(username);
@@ -65,6 +67,11 @@ public class UserServiceImp implements UserService{
 		System.out.println("RETURNED SUCCESFULLY");
 		return newUser.get(0).getRoles().get(0).getName();
 		
+	}
+
+	@Override
+	public List<Users> getAllUsers() {
+		return userRepository.findAll();
 	}
 
 }

@@ -21,6 +21,8 @@ public interface AdminService {
 	
 	public List<Users> searchUser(String user);
 	
+
+	
 	/*		MOVIE OPERATIONS		*/
 	public Boolean addMovie(MovieInformation movie);
 	

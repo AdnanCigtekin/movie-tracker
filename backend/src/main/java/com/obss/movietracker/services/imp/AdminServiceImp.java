@@ -164,7 +164,22 @@ public class AdminServiceImp  implements AdminService, UserDetailsService{
 //		}
 //		
 		try {
-			userRepository.deleteById(id);		
+			Users user = userRepository.findById(id).get();
+			user.setRoles(null);
+			//Lists myList = movieListRepository.findById(user.getMyLists().get(0).getId()).get();
+			if(!user.getMyLists().isEmpty()) {
+				int i = 0;
+				List<Lists> myLists = user.getMyLists();
+				Long newId = user.getMyLists().get(i).getId();
+				movieListRepository.deleteById(newId);
+				movieListRepository.deleteById(newId + 1);
+				user.setMyLists(null);
+
+			}
+			userRepository.save(user);
+			
+			userRepository.deleteById(id);	
+			
 			return true;
 		}catch(Exception e) {
 			e.printStackTrace();
@@ -177,18 +192,18 @@ public class AdminServiceImp  implements AdminService, UserDetailsService{
 	public Boolean updateUser(UserCreateDTO user) {
 		// TODO : Check for admin privileges
 		try {
-			List<Users> userList = userRepository.findMyUserByUsername(user.getUsername());
+			Optional<Users> userList = userRepository.findById(user.getId());
 			
-			if(userList.isEmpty())
+			if(userList.empty() == null)
 				return false;
 			
-			Users newUser = userList.get(0);
+			Users newUser = userList.get();
 
 			if(user.getEnabled() != null)
 				newUser.setEnabled(user.getEnabled());
 
 			if(user.getPassword() != null)
-				newUser.setPassword(user.getPassword());
+				newUser.setPassword(bcryptEncoder.encode(user.getPassword()));
 			if(user.getUsername() != null)
 				newUser.setUsername(user.getUsername());
 			if(user.getRoleId() != null) {
@@ -278,7 +293,6 @@ public class AdminServiceImp  implements AdminService, UserDetailsService{
 
 			if(movie.getDirectors() != null) {
 				//newMovie.setDirector(movie.getDirector());
-				
 				List<Director> newDirectors = new ArrayList<Director>();
 				for(String s : movie.getDirectors()) {
 					Long temp =	Long.parseLong(s);
@@ -387,6 +401,8 @@ public class AdminServiceImp  implements AdminService, UserDetailsService{
 		List<Movie> resultOfMovies = movieRepository.findMyDirectorMovie(directorId);
 		return resultOfMovies;
 	}
+
+
 
 
 

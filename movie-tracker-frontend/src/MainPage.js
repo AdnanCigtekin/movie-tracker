@@ -23,6 +23,7 @@ class MainPage extends React.Component {
                             <td>
                                 <Link to="/user-panel">User Panel</Link>
                             </td>
+
                         </tr>
                     </tbody>
                 </table>

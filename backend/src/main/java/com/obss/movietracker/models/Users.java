@@ -26,6 +26,8 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
 import com.obss.movietracker.models.Role;
 
+import org.json.*;
+
 @Entity
 @Table( name = "users" )
 public class Users implements UserDetails{
@@ -115,7 +117,13 @@ public class Users implements UserDetails{
 
 	@Override
 	public String toString() {
-		return "[ username = " + username + " password = " + password + " enabled = " + enabled  + " ]";
+		JSONObject jo = new JSONObject();
+		jo.put("userId", userId);
+		jo.put("username", username);
+		jo.put("password", password);
+		jo.put("enabled", enabled);
+		jo.put("roles", roles);
+		return jo.toString();
 	}
 
 	@Override

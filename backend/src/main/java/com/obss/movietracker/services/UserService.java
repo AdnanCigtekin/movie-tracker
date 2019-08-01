@@ -3,6 +3,7 @@ package com.obss.movietracker.services;
 import java.util.List;
 
 import com.obss.movietracker.models.Movie;
+import com.obss.movietracker.models.Users;
 
 public interface UserService {
 	
@@ -13,5 +14,7 @@ public interface UserService {
 	public List<Movie> searchMoviesByName(String movieName);
 	
 	public String getUserRole(String username);
+	
+	public List<Users> getAllUsers();
 	
 }

@@ -5,8 +5,14 @@ public class UserCreateDTO {
 	private String username;
 	private String password;
 	private Boolean enabled;
+	private Long Id;
 	
-	
+	public Long getId() {
+		return Id;
+	}
+	public void setId(Long id) {
+		Id = id;
+	}
 	public Long getRoleId() {
 		return roleId;
 	}

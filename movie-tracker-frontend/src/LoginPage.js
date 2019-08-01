@@ -4,7 +4,7 @@ import { Redirect } from 'react-router';
 
 
 class LoginPage extends React.Component {
-    _isMounted = false;
+   
 
     constructor(props) {
         super(props)
@@ -27,13 +27,7 @@ class LoginPage extends React.Component {
         });
     }
 
-    componentDidMount() {
-        this._isMounted = true;
-    }
-
-    componentWillUnmount() {
-        this._isMounted = false;
-    }
+  
 
     handleSubmit(event) {
         console.log("user submitted name : " + this.state.username + " " + " password : " + this.state.password)
@@ -65,40 +59,54 @@ class LoginPage extends React.Component {
 
                 cookies.set('jwt', this.state.token, { path: '/' });
                 cookies.set("user", this.state.username, { path: "/" });
-                if (this._isMounted) {
-                    this.setState({
-                        loggedIn: true,
-                        isLoggingIn: false
-                    })
-                }
+                
+                   
+                
+                console.log("My token" + this.state.token)
             }
 
             ).catch(error => {
                 console.error(error);
-                if (this._isMounted) {
+                
                     this.setState({
                         username: "",
                         password: "",
                         isLoggingIn: false
                     });
+                
+            }).then(() => {
+                fetch('http://localhost:8080/user/role/?name=' + this.state.username, {
+                    method: "GET",
+                    headers: {
+                        'Authorization': 'Bearer ' + this.state.token
+                    }
                 }
-            }).then(fetch('http://localhost:8080/user/role/?name=' + this.state.username, {
-                method: "GET",
-                headers: {
-                    'Authorization': 'Bearer ' + cookies.get("jwt")
-                }
-            }).then(response => response.text()
+                ).then(response => response.text()
 
-            ).then(response => this.setState(
-                {
-                    userRole: response
+                ).then(response => this.setState(
+                    {
+                        userRole: response
 
-                }
+                    }
 
-            )).then(() => {
-                console.log("USER ROLE : " + this.state.userRole)
+                )).then(() => {
+                    console.log("USER ROLE : " + this.state.userRole)
+                    this.setState({
+                        loggedIn: true,
+                        isLoggingIn: false
+                    })
+                }).catch(error => {
+                    console.error(error);
+                    
+                        this.setState({
+                            username: "",
+                            password: "",
+                            isLoggingIn: false
+                        });
+                    
+                })
+
             })
-            )
     }
 
 

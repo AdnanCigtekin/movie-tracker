@@ -1,9 +1,12 @@
 package com.obss.movietracker.controllers;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.annotation.PostConstruct;
 
+import org.json.JSONArray;
+import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
@@ -66,14 +69,18 @@ public class UserController {
     @Secured({"ROLE_ADMIN"})
     //@PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<String> updateUser(@RequestBody UserCreateDTO user) {
-    	
+    
     	Boolean isSuccess = adminService.updateUser(user);		
+    	JSONObject msg = new JSONObject();
     	
-    	if(isSuccess)
-    		return new ResponseEntity<>("OK", HttpStatus.ACCEPTED);
-    	else
-    		return new ResponseEntity<>("Failed to update user", HttpStatus.INTERNAL_SERVER_ERROR);
-
+    	if(isSuccess) {
+    		msg.put("message", "Succesfully Updated");
+    		return new ResponseEntity<>(msg.toString(), HttpStatus.ACCEPTED);
+    	}
+    	else {
+    		msg.put("message", "Failed to update user");
+    		return new ResponseEntity<>(msg.toString(), HttpStatus.INTERNAL_SERVER_ERROR);
+    	}
     } 
     
     @DeleteMapping("/")
@@ -82,11 +89,15 @@ public class UserController {
     public ResponseEntity<String> deleteUser(@RequestBody IdContainer myId) {
     	
     	Boolean isSuccess = adminService.deleteUser(myId.getId());		
-    	
-    	if(isSuccess)
-    		return new ResponseEntity<>("OK", HttpStatus.ACCEPTED);
-    	else
-    		return new ResponseEntity<>("Failed to create user", HttpStatus.INTERNAL_SERVER_ERROR);
+    	JSONObject msg = new JSONObject();
+    	if(isSuccess) {
+    		msg.put("message", "Succesfully Deleted");
+    		return new ResponseEntity<>(msg.toString(), HttpStatus.ACCEPTED);
+    	}
+    	else {
+    		msg.put("message", "Failed to delete user");
+    		return new ResponseEntity<>(msg.toString(), HttpStatus.INTERNAL_SERVER_ERROR);
+    	}
 
     } 
      
@@ -95,19 +106,68 @@ public class UserController {
   //  @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<String> searchUser(@RequestParam(value="name") String user) {
     	
-    	List<Users> userList = adminService.searchUser(user);		
+//    	List<Users> userList = adminService.searchUser(user);		
+//    	
+//    	//Returning the output
+//    	StringBuffer output = new StringBuffer();
+//    	output.append("{ \n		'output' : [\n ");
+//    	for(Users u : userList) {
+//    		output.append("\t\t\t\t\t" + u.toString() + "\n");
+//    	}
+//    	output.append("\t\t\t\t\t]\n}");
+//    	
+//    	return new ResponseEntity<>(output.toString(), HttpStatus.ACCEPTED);
+//    	
     	
-    	//Returning the output
-    	StringBuffer output = new StringBuffer();
-    	output.append("{ \n		'output' : [\n ");
-    	for(Users u : userList) {
-    		output.append("\t\t\t\t\t" + u.toString() + "\n");
-    	}
-    	output.append("\t\t\t\t\t]\n}");
+   
+    	List<Users> userList =  adminService.searchUser(user);		
+
+
+    	Integer i = 0;
+ 
+    		JSONObject newObj = new JSONObject();
+//    		newObj.put(i.toString(), u.);
+    		newObj.put("username", userList.get(0).getUsername());
+    		newObj.put("id", userList.get(0).getId());
+    		newObj.put("roles", userList.get(0).getRoles());
     	
-    	return new ResponseEntity<>(output.toString(), HttpStatus.ACCEPTED);
+    		
+    	
+  
+    	//output.append("\t\t\t\t\t]\n}");
+    	String output = newObj.toString();
+    	return new ResponseEntity<>(output, HttpStatus.OK);
     	
     }   
+    
+    
+    @GetMapping("/search-all")
+    @Secured({"ROLE_ADMIN"})
+  //  @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<String> getAllUser() {
+    	
+    	JSONObject jos = new JSONObject();
+    	List<Users> userList = userService.getAllUsers();		
+    	JSONArray joArray = new JSONArray();
+
+    	Integer i = 0;
+    	for(Users u : userList) {
+    		JSONObject newObj = new JSONObject();
+//    		newObj.put(i.toString(), u.);
+    		newObj.put("username", u.getUsername());
+    		newObj.put("id", u.getId());
+    		newObj.put("roles", u.getRoles());
+    		joArray.put(newObj);
+    		
+    	}
+    	jos.put("datas", joArray);
+    	//output.append("\t\t\t\t\t]\n}");
+    	String output = jos.toString();
+    	return new ResponseEntity<>(output, HttpStatus.OK);
+    	
+    }
+    
+    
     
     @GetMapping("/role")
     @Secured({"ROLE_ADMIN","ROLE_USER"})
@@ -128,7 +188,7 @@ public class UserController {
     	
     }
     
-    
+   
 
 
 	
