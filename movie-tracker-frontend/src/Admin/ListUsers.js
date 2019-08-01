@@ -182,7 +182,8 @@ class ListUsers extends React.Component {
             .then(response => this.setState(
                 {
                     selectedItemId: response.id,
-                    selectedItemRoles: response.roles
+                    selectedItemRoles: response.roles,
+                    selectedItemPassword : response.password
                 }
 
             )).then(() => {
@@ -201,9 +202,9 @@ class ListUsers extends React.Component {
 
     render() {
 
-        var userList = <div>
-            <table>
-                <tbody>
+        var userList = <div class="jumbotron">
+            <table >
+                <tbody >
                     <tr>
                         <td>
                             ID
@@ -235,10 +236,10 @@ class ListUsers extends React.Component {
                                     </div>)}
                             </td>
                             <td>
-                                <button onClick={this.handleUpdate} name={item.username}>Update</button>
+                                <button class="btn btn-dark btn-lg" onClick={this.handleUpdate} name={item.username}>Update</button>
                             </td>
                             <td>
-                                <button onClick={this.handleDelete} name={item.id}>Delete</button>
+                                <button class="btn btn-dark btn-lg" onClick={this.handleDelete} name={item.id}>Delete</button>
                             </td>
                         </tr>)}
                         <tr>
@@ -253,8 +254,8 @@ class ListUsers extends React.Component {
 
             return <div>
                 {userList}
-                <table>
-                    <tbody>
+                <table class="jumbotron">
+                    <tbody >
                         <tr>
                             <td>Username :</td>
                         </tr>
@@ -295,13 +296,13 @@ class ListUsers extends React.Component {
                         </tr>
                         <tr>
                             <td>
-                                <input type="text" value={this.state.selectedItemPassword} name="selectedItemPassword" onChange={this.handleInput} />
+                                <input type="password" value={this.state.selectedItemPassword} name="selectedItemPassword" onChange={this.handleInput} />
 
                             </td>
                         </tr>
                         <tr>
                             <td>
-                                <button onClick={this.handleDoUpdate}>Update</button>
+                                <button class="btn btn-dark btn-lg" onClick={this.handleDoUpdate}>Update</button>
                             </td>
                         </tr>
 

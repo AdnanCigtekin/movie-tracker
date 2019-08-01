@@ -48,6 +48,7 @@ public class AdminServiceImp  implements AdminService, UserDetailsService{
 	
 	@Autowired
 	private BCryptPasswordEncoder bcryptEncoder;
+
 	
 	
 	@Override
@@ -165,6 +166,9 @@ public class AdminServiceImp  implements AdminService, UserDetailsService{
 //		
 		try {
 			Users user = userRepository.findById(id).get();
+			if(user.getUsername().equals("admin")) {
+				return false;
+			}
 			user.setRoles(null);
 			//Lists myList = movieListRepository.findById(user.getMyLists().get(0).getId()).get();
 			if(!user.getMyLists().isEmpty()) {

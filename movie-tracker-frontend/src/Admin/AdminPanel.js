@@ -13,7 +13,7 @@ class AdminPanel extends React.Component {
             token: "",
             username: "",
             failed: false
-        }
+        } 
     }
     componentDidMount() {
         const cookies = new Cookies();
@@ -31,16 +31,25 @@ class AdminPanel extends React.Component {
 
         return <div>
             <CheckAdmin />
-            <h2 align="center">ADMIN PANEL</h2>
+            <h2 class="display-4" align="center">ADMIN PANEL</h2>
 
-            <table>
+            <table  align="center" >
                 <tbody>
                     <tr>
-                        <td>
+                        <td class="jumbotron">
+                            <UserOperations />
+                            <ListUsers />
+                        </td>
+                        <td class="jumbotron">
+                            <UserOperations />
+                            <ListUsers />
+                        </td>
+                        <td class="jumbotron">
                             <UserOperations />
                             <ListUsers />
                         </td>
                     </tr>
+                    
                 </tbody>
             </table>
 

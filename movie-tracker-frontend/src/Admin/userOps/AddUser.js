@@ -1,6 +1,7 @@
 import React from 'react'
 import Cookies from 'universal-cookie';
 import { Link } from 'react-router-dom'
+import 'bootstrap/dist/css/bootstrap.min.css';
 
 
 class AddUser extends React.Component {
@@ -15,7 +16,8 @@ class AddUser extends React.Component {
             userRole: 0,
             messages: [],
             token: "",
-            success : false
+            success: false,
+            adding: false
         }
         this.handleCheckBoxChange = this.handleCheckBoxChange.bind(this);
         this.handleInputChange = this.handleInputChange.bind(this);
@@ -75,6 +77,11 @@ class AddUser extends React.Component {
 
     handleSubmit(event) {
         var errors = []
+
+        this.setState({
+            adding: true
+        })
+
         if (this.state.username == "") {
             var error = `username field cannot be empty`
             errors.push(error);
@@ -95,6 +102,9 @@ class AddUser extends React.Component {
 
             if (this.state.messages.length != 0) {
                 console.log("Entered")
+                this.setState({
+                    adding: false
+                })
                 return;
             }
 
@@ -115,16 +125,17 @@ class AddUser extends React.Component {
                 )
                 .then(response => {
                     console.log("response : " + response)
-                    if(response == "OK"){
+                    if (response == "OK") {
                         this.setState({
-                            messages : ["User succesfully created!"],
-                            success : true
+                            messages: ["User succesfully created!"],
+                            success: true,
+                            adding: false
                         })
                     }
                 })
                 .catch(error => {
                     console.error(error);
-                    this.setState({ employees: "", token: "" });
+                    this.setState({ adding: false });
                 })
         })
     }
@@ -142,13 +153,13 @@ class AddUser extends React.Component {
                     <tr>
                         <td>
                             Username:
-            <input type="text" value={this.state.username} name="username" onClick={this.handleInputChange} onChange={this.handleInputChange} />
+            <input type="text" class="form-control" value={this.state.username} name="username" onClick={this.handleInputChange} onChange={this.handleInputChange} />
                         </td>
                     </tr>
                     <tr>
                         <td>
                             Password:
-            <input type="text" value={this.state.password} name="password" onChange={this.handleInputChange} />
+            <input type="password" class="form-control" value={this.state.password} name="password" onChange={this.handleInputChange} />
                         </td>
                     </tr>
                     <tr>
@@ -159,7 +170,7 @@ class AddUser extends React.Component {
 
                     <tr>
                         <td>
-                            <select defaultValue={this.state.userRole}
+                            <select class="form-control" defaultValue={this.state.userRole}
                                 onChange={this.handleSelectBoxChange}
                             >
                                 <option value="0">Seçiniz</option>
@@ -170,7 +181,7 @@ class AddUser extends React.Component {
                     </tr>
                     <tr>
                         <td>
-                            <button onClick={this.handleSubmit}>Login</button>
+                            <button class="btn btn-dark btn-lg" onClick={this.handleSubmit}>Submit</button>
 
                         </td>
                     </tr>
@@ -183,8 +194,15 @@ class AddUser extends React.Component {
             </table>
         </div >
 
-        if(this.state.success)
-            return  <div> <div align="center">{x}</div>  <Link align="center" to="/admin-panel">Go back to admin panel</Link></div>
+        if (this.state.adding)
+            return <div align="center">{x}
+                <div  class="spinner-border" role="status">
+                    <span class="sr-only">Loading...</span>
+                </div>
+            </div>
+
+        if (this.state.success)
+            return <div> <div align="center">{x}</div>  <Link class="btn btn-dark btn-lg" align="center" to="/admin-panel">Go back to admin panel</Link></div>
 
         return <div><div align="center">{x}</div></div>;
     }

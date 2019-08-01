@@ -130,7 +130,7 @@ public class UserController {
     		newObj.put("username", userList.get(0).getUsername());
     		newObj.put("id", userList.get(0).getId());
     		newObj.put("roles", userList.get(0).getRoles());
-    	
+    		newObj.put("password", userList.get(0).getPassword());
     		
     	
   

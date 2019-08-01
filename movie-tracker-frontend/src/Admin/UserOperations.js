@@ -2,13 +2,29 @@ import React from 'react'
 import { Link } from 'react-router-dom'
 
 
-class UserOperations extends React.Component{
+class UserOperations extends React.Component {
 
 
-    render(){
+    render() {
         return <div>
-            <h3>USER OPERATIONS</h3>
-            <Link to="/add-user">Add</Link>
+            <div>
+                <table align="center">
+                    <tbody align="center">
+                        <tr>
+                            <td>
+                                <h3 class="font-weight-light">USER OPERATIONS</h3>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <Link class="btn btn-dark btn-lg" to="/add-user">Add</Link>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+
+
+            </div>
         </div>
     }
 }
