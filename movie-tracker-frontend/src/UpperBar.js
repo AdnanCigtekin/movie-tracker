@@ -1,6 +1,6 @@
 import React from 'react';
 import Cookies from 'universal-cookie';
-
+import './index.css'
 class UpperBar extends React.Component {
 
     constructor(props) {
@@ -19,15 +19,15 @@ class UpperBar extends React.Component {
 
     render() {
         if (this.state.username == null) {
-            return <div className="flex-fill">
-                <nav id="navbar-example2" class="navbar navbar-dark bg-dark flex-fill">
+            return <div className="upper-bar">
+                <nav id="navbar-example2" class="navbar navbar-dark bg-dark upper-bar">
                     <a class="navbar-brand" href="/user-panel"></a>
 
                 </nav>
             </div>
         }
-        return <div className="d-flex">
-            <nav id="navbar-example2" class="navbar navbar-dark bg-dark flex-fill">
+        return <div className="upper-bar">
+            <nav id="navbar-example2" class="navbar navbar-dark bg-dark upper-bar">
                 <a class="navbar-brand" href="/user-panel">WELCOME, {this.state.username}</a>
             </nav>
         </div>
