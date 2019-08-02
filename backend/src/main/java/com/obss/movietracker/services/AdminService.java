@@ -32,6 +32,8 @@ public interface AdminService {
 	
 	public List<Movie> searchMovie(String movie);
 	
+	public List<Movie> getAllMovies();
+	
 	/*		DIRECTOR OPERATIONS		*/
 	public Boolean addDirector(Director director);
 	
@@ -43,7 +45,7 @@ public interface AdminService {
 	
 	public List<Movie> searchDirectorMovies(String director);
 
-	
+	public List<Director> getAllDirectors();
 	
 	
 	

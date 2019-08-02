@@ -2,6 +2,8 @@ package com.obss.movietracker.controllers;
 
 import java.util.List;
 
+import org.json.JSONArray;
+import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
@@ -115,6 +117,32 @@ public class DirectorController {
 	    	
 	    }
 
+	    @GetMapping("/search-all")
+	    @Secured({"ROLE_ADMIN"})
+	  //  @PreAuthorize("hasRole('ADMIN')")
+	    public ResponseEntity<String> getEveryDirector() {
+	    	
+	    	JSONObject jos = new JSONObject();
+	    	List<Director> directorList = adminService.getAllDirectors();		
+	    	JSONArray joArray = new JSONArray();
 
+	    	Integer i = 0;
+	    	for(Director u : directorList) {
+	    		JSONObject newObj = new JSONObject();
+//	    		newObj.put(i.toString(), u.);
+	    		newObj.put("surname", u.getSurname());
+	    		newObj.put("birthDate", u.getBirthDate());
+	    		newObj.put("birthPlace", u.getBirthPlace());
+	    		newObj.put("id", u.getDirectorId());
+	    		newObj.put("name", u.getName());
+	    		joArray.put(newObj);
+	    		
+	    	}
+	    	jos.put("datas", joArray);
+	    	//output.append("\t\t\t\t\t]\n}");
+	    	String output = jos.toString();
+	    	return new ResponseEntity<>(output, HttpStatus.OK);
+	    	
+	    }
 
 }

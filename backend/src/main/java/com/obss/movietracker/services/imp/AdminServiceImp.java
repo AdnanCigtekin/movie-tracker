@@ -406,6 +406,17 @@ public class AdminServiceImp  implements AdminService, UserDetailsService{
 		return resultOfMovies;
 	}
 
+	@Override
+	public List<Movie> getAllMovies() {
+		
+		 return movieRepository.findAll();
+	}
+
+	@Override
+	public List<Director> getAllDirectors() {
+		return directorRepository.findAll();
+	}
+
 
 
 

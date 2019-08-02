@@ -19,15 +19,15 @@ class UpperBar extends React.Component {
 
     render() {
         if (this.state.username == null) {
-            return <div>
-                <nav id="navbar-example2" class="navbar navbar-dark bg-dark">
+            return <div className="flex-fill">
+                <nav id="navbar-example2" class="navbar navbar-dark bg-dark flex-fill">
                     <a class="navbar-brand" href="/user-panel"></a>
 
                 </nav>
             </div>
         }
-        return <div>
-            <nav id="navbar-example2" class="navbar navbar-dark bg-dark">
+        return <div className="d-flex">
+            <nav id="navbar-example2" class="navbar navbar-dark bg-dark flex-fill">
                 <a class="navbar-brand" href="/user-panel">WELCOME, {this.state.username}</a>
             </nav>
         </div>

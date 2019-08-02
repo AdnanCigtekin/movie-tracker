@@ -2,6 +2,8 @@ package com.obss.movietracker.controllers;
 
 import java.util.List;
 
+import org.json.JSONArray;
+import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
@@ -22,6 +24,7 @@ import com.obss.movietracker.dto.IdContainer;
 import com.obss.movietracker.dto.MovieInformation;
 import com.obss.movietracker.dto.MovieListInformation;
 import com.obss.movietracker.models.Movie;
+import com.obss.movietracker.models.Users;
 import com.obss.movietracker.services.imp.AdminServiceImp;
 import com.obss.movietracker.services.imp.UserServiceImp;
 @CrossOrigin(origins = "*", maxAge=3600)
@@ -154,5 +157,34 @@ public class MovieController {
     		return new ResponseEntity<>("Failed to fetch", HttpStatus.BAD_REQUEST);
 
     } 
+    
+    @GetMapping("/search-all")
+    @Secured({"ROLE_ADMIN"})
+  //  @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<String> getEveryMovie() {
+    	
+    	JSONObject jos = new JSONObject();
+    	List<Movie> movieList = adminService.getAllMovies();		
+    	JSONArray joArray = new JSONArray();
+
+    	Integer i = 0;
+    	for(Movie u : movieList) {
+    		JSONObject newObj = new JSONObject();
+//    		newObj.put(i.toString(), u.);
+    		newObj.put("duration", u.getDuration());
+    		newObj.put("directors", u.getDirectors());
+    		newObj.put("genre", u.getGenre());
+    		newObj.put("id", u.getId());
+    		newObj.put("name", u.getName());
+    		newObj.put("releaseDate", u.getReleaseDate());
+    		joArray.put(newObj);
+    		
+    	}
+    	jos.put("datas", joArray);
+    	//output.append("\t\t\t\t\t]\n}");
+    	String output = jos.toString();
+    	return new ResponseEntity<>(output, HttpStatus.OK);
+    	
+    }
 
 }

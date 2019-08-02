@@ -2,7 +2,7 @@ import React from 'react'
 import Cookies from 'universal-cookie';
 import { Link } from 'react-router-dom'
 import 'bootstrap/dist/css/bootstrap.min.css';
-
+import UpperBar from './../../UpperBar'
 
 class AddUser extends React.Component {
 
@@ -145,7 +145,7 @@ class AddUser extends React.Component {
 
 
         var x = <div align="center">
-
+            <UpperBar/>
             <h3>Add USER</h3>
             <table >
                 <tbody align="center">
@@ -195,7 +195,9 @@ class AddUser extends React.Component {
         </div >
 
         if (this.state.adding)
-            return <div align="center">{x}
+            return <div align="center">
+                
+            {x}
                 <div  class="spinner-border" role="status">
                     <span class="sr-only">Loading...</span>
                 </div>

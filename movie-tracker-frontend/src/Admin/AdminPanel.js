@@ -1,10 +1,14 @@
 import React from 'react'
 import Cookies from 'universal-cookie';
 import { Redirect } from 'react-router';
-import UserOperations from './UserOperations'
+import UserOperations from './userOps/UserOperations'
+import MovieOperations from './movieOps/MovieOperations'
+import DirectorOperations from './directorOps/DirectorOperations'
 import CheckAdmin from './CheckAdmin'
-import ListUsers from './ListUsers'
-
+import ListUsers from './userOps/ListUsers'
+import ListMovies from './movieOps/ListMovies'
+import ListDirectors from './directorOps/ListDirectors'
+import UpperBar from './../UpperBar'
 class AdminPanel extends React.Component {
 
     constructor(props) {
@@ -31,7 +35,8 @@ class AdminPanel extends React.Component {
 
         return <div>
             <CheckAdmin />
-            <h2 class="display-4" align="center">ADMIN PANEL</h2>
+            <UpperBar />
+            <h2 className="display-4" align="center">ADMIN PANEL</h2>
 
             <table  align="center" >
                 <tbody>
@@ -40,13 +45,13 @@ class AdminPanel extends React.Component {
                             <UserOperations />
                             <ListUsers />
                         </td>
-                        <td class="jumbotron">
-                            <UserOperations />
-                            <ListUsers />
+                        <td class="jumbotron align-top">
+                            <MovieOperations />
+                            <ListMovies />
                         </td>
-                        <td class="jumbotron">
-                            <UserOperations />
-                            <ListUsers />
+                        <td class="jumbotron align-top">
+                            <DirectorOperations />
+                            <ListDirectors />
                         </td>
                     </tr>
                     
